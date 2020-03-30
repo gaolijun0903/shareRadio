@@ -1,0 +1,63 @@
+{
+    "ret_code": 200,
+    "ret_msg": "success",
+    "result": {
+        "count": 6,
+        "list": [
+            {
+                "anchor_id": 7,
+                "user_nickname": "",
+                "signature": "测试测试测试测试测试测试测试测试测试测试测试测试测试",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/71e7aa3da87be755f011b84591b9d938@2x.png",
+                "is_live": 0,
+                "praise": 190,
+                "browse": 150
+            },
+            {
+                "anchor_id": 6,
+                "user_nickname": "",
+                "signature": "测试111111111111111",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/6@2x.png",
+                "is_live": 0,
+                "praise": 920,
+                "browse": 672
+            },
+            {
+                "anchor_id": 5,
+                "user_nickname": "",
+                "signature": "乐嘉读心术",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/4@2x.png",
+                "is_live": 0,
+                "praise": 15,
+                "browse": 439
+            },
+            {
+                "anchor_id": 4,
+                "user_nickname": "",
+                "signature": "讲给孩子的中国小史",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/3@2x.png",
+                "is_live": 0,
+                "praise": 57,
+                "browse": 151
+            },
+            {
+                "anchor_id": 2,
+                "user_nickname": "",
+                "signature": "春晚十年精选",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/2@2x.png",
+                "is_live": 0,
+                "praise": 404,
+                "browse": 977
+            },
+            {
+                "anchor_id": 1,
+                "user_nickname": "admin",
+                "signature": "郭德纲十年相声精选集",
+                "avatar": "http://testing.broadcast.yongche.org/upload/avatar/1@2x.png",
+                "is_live": 0,
+                "praise": 241,
+                "browse": 168
+            }
+        ]
+    }
+}

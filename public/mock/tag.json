@@ -1,0 +1,21 @@
+{
+    "ret_code": 200,
+    "ret_msg": "success",
+    "result": {
+        "count": 6,
+        "list": [
+            {
+                "name": "标签1",
+                "type_id": 1
+            },
+            {
+                "name": "标签2",
+                "type_id": 2
+            },
+            {
+                "name": "标签3",
+                "type_id": 3
+            }
+        ]
+    }
+}
