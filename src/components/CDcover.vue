@@ -7,7 +7,8 @@
         <div class="likebtn"></div>
       </div>
     </div>
-    <audio ref="audio" id="audio" src="https://live-broadcast.yongche.org/2/live.m3u8 " preload="auto" ></audio>
+    <video ref="video" id="video" ></video>
+    <!-- <audio ref="audio" id="audio" src="https://live-broadcast.yongche.org/2/live.m3u8 " preload="auto" ></audio> -->
     <!-- <audio ref="audio" id="audio" src="https://lhttp.qingting.fm/live/4900/64k.mp3" preload="auto" type="application/x-mpegURL"></audio> -->
 
     <div class="maintitle">{{mainTitle}}</div>
