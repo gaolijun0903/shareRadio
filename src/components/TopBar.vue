@@ -1,6 +1,7 @@
 <template>
   <div class="topbar">
-    <div class="downloadbtn" @click="download">下载</div>
+    <div class="title">随行电台</div>
+    <div class="downloadbtn" @click="download">打开APP</div>
   </div>
 </template>
 
@@ -69,14 +70,26 @@ export default {
 <style scoped>
 .topbar {
   width: 100%;
-  height: 0.72rem;
-  background: #ccc;
+  height: 0.96rem;
+  color: #FFFFFF;
+  text-align: center;
+  background: rgba(0,0,0,0.3);
+}
+.title{
+  font-size: 0.34rem;
+  line-height: 0.96rem;
+  font-weight: bold;
 }
 .downloadbtn{
-  width: 50%;
-  height: 0.72rem;
-  background: #fff;
-  
+  position: absolute;
+  top: 0.2rem;
+  right: 0.24rem;
+  width: 1.51rem;
+  height: 0.56rem;
+  font-size: 0.26rem;
+  line-height: 0.56rem;
+  background: rgba(0,0,0,0.3);
+  border-radius: 0.32rem;
 }
 
 </style>
