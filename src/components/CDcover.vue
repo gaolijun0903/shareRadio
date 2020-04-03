@@ -4,7 +4,7 @@
       <img class="cdcover" :src="coverImg" alt="">
       <div class="btnbox">
         <div class="playbtn" :class="{playing:isPlaying}" @click="play"></div>
-        <div class="likebtn"></div>
+        <div class="likebtn" :class="{like:isLike}"></div>
       </div>
     </div>
     <video ref="video" id="video" ></video>
@@ -34,6 +34,15 @@ export default {
     // this.getTypeList();
   },
   mounted() {
+    // if(Hls.isSupported()) {
+    //   var video = this.$refs.video;
+    //   var hls = new Hls();
+    //   hls.loadSource('https://live-broadcast.yongche.org/2/live.m3u8 ');
+    //   hls.attachMedia(video);
+    //   hls.on(Hls.Events.MANIFEST_PARSED,function() {
+    //     video.play();
+    //   });
+    // }
   },
   methods:{
     getTypeList: async function() {
@@ -49,10 +58,10 @@ export default {
     play: function(){
       if (this.isPlaying) {
         this.isPlaying = false;
-        this.$refs.audio.play();
+        this.$refs.video.play();
       } else {
         this.isPlaying = true;
-        this.$refs.audio.pause();
+        this.$refs.video.pause();
       }
     }
   }
@@ -87,12 +96,11 @@ export default {
   margin: 1.46rem auto 0;
   width: 1.08rem;
   height: 1.08rem;
-  border: 3px solid #FFFFFF;
-  background: url(http://cdn.lanjingfm.com/static/html/img/radio/play.png) no-repeat center;
-    background-size: 100%;
+  background: url(~@/assets/play@2x.png) no-repeat center;
+  background-size: 100%;
 }
 .playbtn.playing{
-  background-image: url(http://cdn.lanjingfm.com/static/html/img/radio/pause.png);
+  background-image: url(~@/assets/pause@2x.png);
 }
 .likebtn{
   position: absolute;
@@ -100,7 +108,11 @@ export default {
   bottom: 0.12rem;
   width: 0.56rem;
   height: 0.56rem;
-  border: 3px solid #FFFFFF;
+  background: url(~@/assets/dislike@2x.png) no-repeat center;
+  background-size: 100%;
+}
+.likebtn.like{
+  background-image: url(~@/assets/like@2x.png);
 }
 .maintitle{
   height: 0.48rem;

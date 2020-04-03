@@ -4,7 +4,8 @@
     <div class="inner">
       <TopBar></TopBar>
       <CDcover></CDcover>
-      <ProgressBar></ProgressBar>
+      <!-- <ProgressBar></ProgressBar> -->
+      <RadioList></RadioList>
     </div>
   </div>
 </template>
@@ -15,6 +16,7 @@ import wx from 'weixin-js-sdk'
 import TopBar from "./TopBar.vue";
 import CDcover from "./CDcover.vue";
 import ProgressBar from "./ProgressBar.vue";
+import RadioList from "./RadioList.vue";
 
 import { getNetData } from '../utils/axiosRequest';
 export default {
@@ -31,7 +33,8 @@ export default {
   components: {
     TopBar,
     CDcover,
-    ProgressBar
+    ProgressBar,
+    RadioList
   },
   mounted() {
     //this.setWxConfig();
@@ -103,7 +106,9 @@ export default {
   top: 0;
   bottom: 0;
   width: 100%;
+  padding-top: 0.96rem;
   background: rgba(0,0,0,0.3);
+  overflow: scroll;
 }
 .blur {	
   /* FireFox, Chrome, Opera */

@@ -69,6 +69,9 @@ export default {
 
 <style scoped>
 .topbar {
+  position: fixed;
+  top: 0;
+  z-index: 1;
   width: 100%;
   height: 0.96rem;
   color: #FFFFFF;
