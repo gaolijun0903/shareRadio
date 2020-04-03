@@ -6,6 +6,7 @@
       <CDcover></CDcover>
       <!-- <ProgressBar></ProgressBar> -->
       <RadioList></RadioList>
+      <ConfirmMask v-show="isShow"></ConfirmMask>
     </div>
   </div>
 </template>
@@ -17,12 +18,16 @@ import TopBar from "./TopBar.vue";
 import CDcover from "./CDcover.vue";
 import ProgressBar from "./ProgressBar.vue";
 import RadioList from "./RadioList.vue";
+import ConfirmMask from "./ConfirmMask.vue";
 
 import { getNetData } from '../utils/axiosRequest';
+// import Bus from '../bus' ;
+
 export default {
   name: "ShareRadio",
   data: function() {
     return {
+      isShow: false, //是否打开“引导下载弹层”
       bgImg: 'https://testing.broadcast.yongche.org/upload/avatar/71e7aa3da87be755f011b84591b9d938@2x.png',
       shareTitle: '世界那么大，我想去看看-微信test',
       shareDesc: '世界那么大，我想去看看-微信test',
@@ -34,11 +39,12 @@ export default {
     TopBar,
     CDcover,
     ProgressBar,
-    RadioList
+    RadioList,
+    ConfirmMask
   },
   mounted() {
     //this.setWxConfig();
-    
+   
   },
   methods: {
     setWxConfig:function(){

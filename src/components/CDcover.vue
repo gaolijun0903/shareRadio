@@ -4,7 +4,7 @@
       <img class="cdcover" :src="coverImg" alt="">
       <div class="btnbox">
         <div class="playbtn" :class="{playing:isPlaying}" @click="play"></div>
-        <div class="likebtn" :class="{like:isLike}"></div>
+        <div class="likebtn" :class="{like:isLike}" @click="leadToApp"></div>
       </div>
     </div>
     <video ref="video" id="video" ></video>
@@ -63,6 +63,9 @@ export default {
         this.isPlaying = true;
         this.$refs.video.pause();
       }
+    },
+    leadToApp: function(){
+      //打开引导弹层
     }
   }
 };
@@ -127,5 +130,8 @@ export default {
   line-height: 0.37rem;
   font-size: 0.26rem;
   color: #E1E1E1;
+}
+#video{
+  display: none;
 }
 </style>
