@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" @click="closeMask">
     <div class="inner">
       <div class="stationlogo">
         <img src="https://testing.broadcast.yongche.org/upload/avatar/71e7aa3da87be755f011b84591b9d938@2x.png" alt="">
@@ -32,6 +32,9 @@ export default {
     this.setDownloadUrl();
   },
   methods:{
+    closeMask: function(){
+      this.$emit('close');
+    },
     setDownloadUrl:function(){
       if(this.phoneType==="ios"){
         if(this.origin==="driver"){

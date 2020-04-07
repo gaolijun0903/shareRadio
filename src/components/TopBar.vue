@@ -20,9 +20,8 @@ export default {
     
   },
   methods:{
-    leadToApp: function(){
-      //打开引导弹层
-      
+    leadToApp: function(){//打开引导弹层
+      this.$emit('leadToApp');
     }
   }
 };

@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <img id="bgimg" :src="bgImg" class="blur" />
+    <img id="bgimg" :src="anchorInfo.avatar" class="blur" />
     <div class="inner">
-      <TopBar></TopBar>
-      <CDcover></CDcover>
-      <!-- <ProgressBar></ProgressBar> -->
-      <RadioList></RadioList>
-      <ConfirmMask v-show="isShow"></ConfirmMask>
+      <TopBar @leadToApp="showMask"></TopBar>
+      <CDcover :anchorInfo="anchorInfo" @leadToApp="showMask"></CDcover>
+      <!-- <ProgressBar v-show="isPlayback"></ProgressBar> -->
+      <RadioList  v-show="!isPlayback" 
+        :programList="programList"
+        @leadToApp="showMask">
+      </RadioList>
+      <ConfirmMask v-show="isShow" @close="closeMask"></ConfirmMask>
     </div>
   </div>
 </template>
@@ -19,34 +22,150 @@ import CDcover from "./CDcover.vue";
 import ProgressBar from "./ProgressBar.vue";
 import RadioList from "./RadioList.vue";
 import ConfirmMask from "./ConfirmMask.vue";
-
 import { getNetData } from '../utils/axiosRequest';
-// import Bus from '../bus' ;
 
 export default {
   name: "ShareRadio",
   data: function() {
     return {
+      isPlayback: false, //是否是“电台直播”还是“回放”
+      anchorInfo: {
+        "anchor_id": 2,
+        "user_nickname": "张国荣精选",
+        "signature": "张国荣精选",
+        "avatar": "https://testing-broadcast.yongche.org/upload/avatar/18be04ecd5c1ca25607d67b40a3a2695.jpg",
+        "is_live": 1,
+        "praise": 36,
+        "browse": 191,
+        "live_path": "https://live-broadcast.yongche.org/2_2/live.m3u8",
+      },
+      programList: [
+        {
+            "program_id": 147,
+            "anchor_id": 2,
+            "start_time": 1586228559,
+            "end_time": 1586228859,
+            "program_name": "13:14:00",
+            "material_name": "1杨宗纬 张碧晨 - 凉凉.mp3",
+            "material_tag": "test1",
+            "material_image": "https://testing-broadcast.yongche.org",
+            "material_playtime": "5:33",
+            "anchor_name": "张国荣精选",
+            "is_favorite": 0
+        },{
+            "program_id": 147,
+            "anchor_id": 2,
+            "start_time": 1586228859,
+            "end_time": 1586229259,
+            "program_name": "13:14:00",
+            "material_name": "2杨宗纬 张碧晨 - 凉凉.mp3",
+            "material_tag": "test1",
+            "material_image": "https://testing-broadcast.yongche.org",
+            "material_playtime": "5:33",
+            "anchor_name": "张国荣精选",
+            "is_favorite": 0
+        },{
+            "program_id": 147,
+            "anchor_id": 2,
+            "start_time": 1586229259,
+            "end_time": 1586229659,
+            "program_name": "13:14:00",
+            "material_name": "3杨宗纬 张碧晨 - 凉凉.mp3",
+            "material_tag": "test1",
+            "material_image": "https://testing-broadcast.yongche.org",
+            "material_playtime": "5:33",
+            "anchor_name": "张国荣精选",
+            "is_favorite": 0
+        },{
+            "program_id": 147,
+            "anchor_id": 2,
+            "start_time": 1586229659,
+            "end_time": 1586230059,
+            "program_name": "13:14:00",
+            "material_name": "4杨宗纬 张碧晨 - 凉凉.mp3",
+            "material_tag": "test1",
+            "material_image": "https://testing-broadcast.yongche.org",
+            "material_playtime": "5:33",
+            "anchor_name": "张国荣精选",
+            "is_favorite": 0
+        },{
+            "program_id": 147,
+            "anchor_id": 2,
+            "start_time": 1586230559,
+            "end_time": 1586231059,
+            "program_name": "13:14:00",
+            "material_name": "5杨宗纬 张碧晨 - 凉凉.mp3",
+            "material_tag": "test1",
+            "material_image": "https://testing-broadcast.yongche.org",
+            "material_playtime": "5:33",
+            "anchor_name": "张国荣精选",
+            "is_favorite": 0
+        },
+      ], //主播节目列表
+      programInfo: {
+        "program_id": 147,
+        "anchor_id": 2,
+        "play_status": 3,
+        "program_name": "13:14:00",
+        "material_name": "杨宗纬 张碧晨 - 凉凉.mp3",
+        "material_tag": "test1",
+        "material_image": "https://testing-broadcast.yongche.org",
+        "material_playtime": "5:33",
+        "material_path": "https://testing-broadcast.yongche.org/upload/audio/20200402/27/live.m3u8",
+        "is_stream": 1,
+        "is_live": 0
+      },
       isShow: false, //是否打开“引导下载弹层”
-      bgImg: 'https://testing.broadcast.yongche.org/upload/avatar/71e7aa3da87be755f011b84591b9d938@2x.png',
       shareTitle: '世界那么大，我想去看看-微信test',
       shareDesc: '世界那么大，我想去看看-微信test',
       shareLink: location.href.split('#')[0],
       shareImgUrl: 'http://www.baidu.com/FpEhdOqBzM8EzgFz3ULByxatSacH'
     }
   },
-  components: {
-    TopBar,
-    CDcover,
-    ProgressBar,
-    RadioList,
-    ConfirmMask
-  },
   mounted() {
     //this.setWxConfig();
    
   },
   methods: {
+    getAnchorInfo: async function() { 
+      try {
+        //获取主播信息
+        this.anchorInfo = await getNetData("/Broadcast/GetAnchorInfo", {
+          anchor_id: this.anchor_id
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    getProgramList: async function() { 
+      try {
+        //获取主播节目列表
+        this.programList = await getNetData("/Broadcast/GetProgramList", {
+          anchor_id: this.anchor_id, 
+          source: this.source, 
+          page: 1,
+          page_size: 100   //长页面展示不分页
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    // getProgramInfo: async function() { 
+    //   try {
+    //     //获取节目详情---回放
+    //     this.programInfo = await getNetData("/Broadcast/GetProgramInfo", {
+    //       program_id: this.program_id,
+    //     });
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // },
+    showMask: function(){ //打开引导弹层
+      this.isShow = true;
+    },
+    closeMask: function(){
+      this.isShow = false;
+    },
     setWxConfig:function(){
       axios.get('//weixin.yongche.com/wechat/jssdk/config?url=' + encodeURIComponent(location.href.split('#')[0])).then((res) => {
         wx.config({
@@ -98,6 +217,13 @@ export default {
       })
     }
 
+  },
+  components: {
+    TopBar,
+    CDcover,
+    ProgressBar,
+    RadioList,
+    ConfirmMask
   }
 }
 </script>

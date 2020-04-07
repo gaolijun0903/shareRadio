@@ -11,8 +11,8 @@
     <!-- <audio ref="audio" id="audio" src="https://live-broadcast.yongche.org/2/live.m3u8 " preload="auto" ></audio> -->
     <!-- <audio ref="audio" id="audio" src="https://lhttp.qingting.fm/live/4900/64k.mp3" preload="auto" type="application/x-mpegURL"></audio> -->
 
-    <div class="maintitle">{{mainTitle}}</div>
-    <div class="subtitle">{{subTitle}}</div>
+    <div class="maintitle" @click="leadToApp">{{mainTitle}}</div>
+    <div class="subtitle" @click="leadToApp">{{subTitle}}</div>
   </div>
 </template>
 
@@ -64,8 +64,8 @@ export default {
         this.$refs.video.pause();
       }
     },
-    leadToApp: function(){
-      //打开引导弹层
+    leadToApp: function(){//打开引导弹层
+      this.$emit('leadToApp');
     }
   }
 };

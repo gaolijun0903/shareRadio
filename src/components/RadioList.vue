@@ -11,47 +11,21 @@
       </div>
     </div>
     <div class="listbody">
-      <div class="listitem played">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r">已播完</div>
-      </div>
-      <div class="listitem playing">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r"></div>
-      </div>
-      <div class="listitem toplay">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r">14:05 播放</div>
-      </div>
-      <div class="listitem toplay">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r">14:05 播放</div>
-      </div>
-      <div class="listitem toplay">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r">14:05 播放</div>
-      </div>
-      <div class="listitem toplay">
-        <div class="item-l">《人在江湖》 - 郭德纲、于谦</div>
-        <div class="item-r">14:05 播放</div>
-      </div>
-    </div>
-    <!-- <div class="ycontainer">
-      <div class="channellist">
-        <div class="channelitem" v-for="(item,index) in zbList" @click="jumpToLive(item.anchor_id)" :key="index">
-          <div class="avatarbox">
-            <img class="avatar" v-lazy="item.avatar" />
-            <div class="browsebox">
-              <span class="browseicon"></span><span class="browsenum">{{item.browse}}万</span>
-            </div>
-          </div>
-          <div class="channelname">{{item.signature}}</div>
-          <div class="praisebox">
-            <span class="praiseicon"></span><span class="praisenum">{{item.praise}}</span>
-          </div>
+      <div v-for="(item,index) in programList" :key="index"  @click="leadToApp">
+        <div class="listitem played" v-show="item.playState==0">
+          <div class="item-l">{{item.material_name}}</div>
+          <div class="item-r">已播完</div>
+        </div>
+        <div class="listitem playing" v-show="item.playState==1">
+          <div class="item-l">{{item.material_name}}</div>
+          <div class="item-r"></div>
+        </div>
+        <div class="listitem toplay" v-show="item.playState==2">
+          <div class="item-l">{{item.material_name}}</div>
+          <div class="item-r">{{item.start_time_formatted}}</div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -62,22 +36,50 @@ export default {
   name: "RadioList",
   data() {
     return {
-      
+      //playState:0, //0已播放，1ing，2未播放
     };
   },
+  props: {
+    programList: {
+      type:Array,
+      required:true
+    }
+  },
   created() {
-    // 请求首屏数据
-    //this.fetchData();
+   this.timeFilter();
   },
   mounted() {
-    // Bus.$on('changeType', this.changeTypeId);
-    // this.$nextTick(() => {
-    //   this.createYScroller();
-    // });
+    
   },
   methods: {
-    leadToApp: function(){
-      //打开引导弹层
+    timeFilter: function(){
+      this.programList.map(item => {
+        this.setPlayState(item);
+        item.start_time_formatted = this.formatDate(item.start_time*1000);
+      })
+    },
+    setPlayState: function(item){
+      // var curTimestamp = new Date().getTime();
+      var curTimestamp = 1586229587953;   //TODO  测试时间
+      if(curTimestamp<item.start_time*1000){ //未开始
+        item.playState = 2;
+      }else if(curTimestamp>=item.start_time*1000 && curTimestamp<item.end_time*1000){ //ing
+        item.playState = 1;
+      }else if(curTimestamp>=item.end_time*1000){//已结束
+        item.playState = 0;
+      }
+    },
+    formatDate: function (t) { 
+      var d=new Date(t); 
+      var hour=d.getHours(); 
+      var minute=d.getMinutes(); 
+      return this.pad0(hour)+":"+this.pad0(minute)+" 播放"; 
+    } ,
+    pad0: function(num){
+      return num<10 ? '0'+num : num;
+    },
+    leadToApp: function(){//打开引导弹层
+      this.$emit('leadToApp');
     }
   }
 };
