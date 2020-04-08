@@ -12,15 +12,15 @@
     </div>
     <div class="listbody">
       <div v-for="(item,index) in programList" :key="index"  @click="leadToApp">
-        <div class="listitem played" v-show="item.playState==0">
+        <div class="listitem played" v-show="item.playState == 0">
           <div class="item-l">{{item.material_name}}</div>
           <div class="item-r">已播完</div>
         </div>
-        <div class="listitem playing" v-show="item.playState==1">
+        <div class="listitem playing" v-show="item.playState == 1">
           <div class="item-l">{{item.material_name}}</div>
           <div class="item-r"></div>
         </div>
-        <div class="listitem toplay" v-show="item.playState==2">
+        <div class="listitem toplay" v-show="item.playState == 2">
           <div class="item-l">{{item.material_name}}</div>
           <div class="item-r">{{item.start_time_formatted}}</div>
         </div>
@@ -30,37 +30,57 @@
 </template>
 
 <script>
-
 import Bus from '../bus' ;
+import { getNetData } from '../utils/axiosRequest';
+import { padding0 } from "../utils/functions";
 export default {
   name: "RadioList",
   data() {
     return {
-      //playState:0, //0已播放，1ing，2未播放
+      programList:[]
     };
   },
   props: {
-    programList: {
+     anchor_state: {
       type:Array,
       required:true
     }
   },
   created() {
-   this.timeFilter();
+   
   },
   mounted() {
-    
+     this.getProgramList()
   },
   methods: {
+     getProgramList: async function() { 
+      try {
+        //获取主播节目列表
+          var res = await getNetData("/Broadcast/GetProgramList", {
+          anchor_id: this.anchor_state[0].anchor_id, 
+          source: this.anchor_state[0].source, 
+          page: 1,
+          page_size: 100   //长页面展示不分页
+        });
+         this.programList  = res.result.list;
+         Bus.$emit('programListLength', res.result.count);
+         this.timeFilter();
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
     timeFilter: function(){
-      this.programList.map(item => {
-        this.setPlayState(item);
-        item.start_time_formatted = this.formatDate(item.start_time*1000);
-      })
+      setInterval(() => {
+        this.programList.map(item => {
+          this.setPlayState(item);
+          item.start_time_formatted = this.formatDate(item.start_time*1000);
+        })
+      }, 60000);  //每分钟更新播放状态
     },
     setPlayState: function(item){
-      // var curTimestamp = new Date().getTime();
-      var curTimestamp = 1586229587953;   //TODO  测试时间
+      var curTimestamp = new Date().getTime();
+      // var curTimestamp = 1586229587953;   //TODO  测试时间
       if(curTimestamp<item.start_time*1000){ //未开始
         item.playState = 2;
       }else if(curTimestamp>=item.start_time*1000 && curTimestamp<item.end_time*1000){ //ing
@@ -73,10 +93,7 @@ export default {
       var d=new Date(t); 
       var hour=d.getHours(); 
       var minute=d.getMinutes(); 
-      return this.pad0(hour)+":"+this.pad0(minute)+" 播放"; 
-    } ,
-    pad0: function(num){
-      return num<10 ? '0'+num : num;
+      return padding0(hour)+":"+padding0(minute)+" 播放"; 
     },
     leadToApp: function(){//打开引导弹层
       this.$emit('leadToApp');

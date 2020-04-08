@@ -1,6 +1,29 @@
-let rootDir = "/Broadcast/";
+let rootDir = "/radio/";
 console.log(`项目部署根目录：${rootDir}`);
 console.log(`当前环境：${process.env.NODE_ENV}`);
+var path = require('path')
+var express = require('express')
+var proxy = require('http-proxy-middleware')
+function resolve (dir) {
+    return path.join(__dirname, dir)
+}
+function addStyleResource (rule) {
+
+      rule.use('style-resource')
+    
+          .loader('style-resources-loader')
+    
+          .options({
+    
+            patterns:[
+    
+              path.resolve(__dirname, './src/styles/imports.styl'),
+    
+            ],
+    
+          })
+    
+    }
 module.exports = {
     publicPath: process.env.NODE_ENV === "production" ? rootDir : "/",
     lintOnSave: false,
@@ -17,5 +40,11 @@ module.exports = {
                 }
             }
         }
+    },
+    chainWebpack: config => {
+        const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
+        types.forEach(type => addStyleResource(config.module.rule('stylus').oneOf(type)))
+        config.resolve.alias
+            .set('components', resolve('src/components'))
     }
 };

@@ -1,15 +1,14 @@
 <template>
   <div class="container">
-    <img id="bgimg" :src="anchorInfo.avatar" class="blur" />
     <div class="inner">
       <TopBar @leadToApp="showMask"></TopBar>
-      <CDcover :anchorInfo="anchorInfo" @leadToApp="showMask"></CDcover>
-      <!-- <ProgressBar v-show="isPlayback"></ProgressBar> -->
-      <RadioList  v-show="!isPlayback" 
-        :programList="programList"
+      <CDcover :anchor_state="anchor_state" @leadToApp="showMask" ></CDcover>
+      <ProgressBar v-show="!isLive"></ProgressBar>
+      <RadioList v-show="isLive"  
+        :anchor_state="anchor_state"
         @leadToApp="showMask">
       </RadioList>
-      <ConfirmMask v-show="isShow" @close="closeMask"></ConfirmMask>
+      <ConfirmMask :shareImgUrl='shareImgUrl' v-show="isShow" @close="closeMask"></ConfirmMask>
     </div>
   </div>
 </template>
@@ -28,138 +27,47 @@ export default {
   name: "ShareRadio",
   data: function() {
     return {
-      isPlayback: false, //是否是“电台直播”还是“回放”
-      anchorInfo: {
-        "anchor_id": 2,
-        "user_nickname": "张国荣精选",
-        "signature": "张国荣精选",
-        "avatar": "https://testing-broadcast.yongche.org/upload/avatar/18be04ecd5c1ca25607d67b40a3a2695.jpg",
-        "is_live": 1,
-        "praise": 36,
-        "browse": 191,
-        "live_path": "https://live-broadcast.yongche.org/2_2/live.m3u8",
-      },
-      programList: [
-        {
-            "program_id": 147,
-            "anchor_id": 2,
-            "start_time": 1586228559,
-            "end_time": 1586228859,
-            "program_name": "13:14:00",
-            "material_name": "1杨宗纬 张碧晨 - 凉凉.mp3",
-            "material_tag": "test1",
-            "material_image": "https://testing-broadcast.yongche.org",
-            "material_playtime": "5:33",
-            "anchor_name": "张国荣精选",
-            "is_favorite": 0
-        },{
-            "program_id": 147,
-            "anchor_id": 2,
-            "start_time": 1586228859,
-            "end_time": 1586229259,
-            "program_name": "13:14:00",
-            "material_name": "2杨宗纬 张碧晨 - 凉凉.mp3",
-            "material_tag": "test1",
-            "material_image": "https://testing-broadcast.yongche.org",
-            "material_playtime": "5:33",
-            "anchor_name": "张国荣精选",
-            "is_favorite": 0
-        },{
-            "program_id": 147,
-            "anchor_id": 2,
-            "start_time": 1586229259,
-            "end_time": 1586229659,
-            "program_name": "13:14:00",
-            "material_name": "3杨宗纬 张碧晨 - 凉凉.mp3",
-            "material_tag": "test1",
-            "material_image": "https://testing-broadcast.yongche.org",
-            "material_playtime": "5:33",
-            "anchor_name": "张国荣精选",
-            "is_favorite": 0
-        },{
-            "program_id": 147,
-            "anchor_id": 2,
-            "start_time": 1586229659,
-            "end_time": 1586230059,
-            "program_name": "13:14:00",
-            "material_name": "4杨宗纬 张碧晨 - 凉凉.mp3",
-            "material_tag": "test1",
-            "material_image": "https://testing-broadcast.yongche.org",
-            "material_playtime": "5:33",
-            "anchor_name": "张国荣精选",
-            "is_favorite": 0
-        },{
-            "program_id": 147,
-            "anchor_id": 2,
-            "start_time": 1586230559,
-            "end_time": 1586231059,
-            "program_name": "13:14:00",
-            "material_name": "5杨宗纬 张碧晨 - 凉凉.mp3",
-            "material_tag": "test1",
-            "material_image": "https://testing-broadcast.yongche.org",
-            "material_playtime": "5:33",
-            "anchor_name": "张国荣精选",
-            "is_favorite": 0
-        },
-      ], //主播节目列表
-      programInfo: {
-        "program_id": 147,
-        "anchor_id": 2,
-        "play_status": 3,
-        "program_name": "13:14:00",
-        "material_name": "杨宗纬 张碧晨 - 凉凉.mp3",
-        "material_tag": "test1",
-        "material_image": "https://testing-broadcast.yongche.org",
-        "material_playtime": "5:33",
-        "material_path": "https://testing-broadcast.yongche.org/upload/audio/20200402/27/live.m3u8",
-        "is_stream": 1,
-        "is_live": 0
-      },
+      anchor_state:[{
+        'anchor_id':'',
+        'program_id':'',
+        'source':'', //来源（1乘客端、2司机端）
+        }
+      ],
+      source:'', 
+      isLive: false, //是否是“电台直播”还是“回放”
       isShow: false, //是否打开“引导下载弹层”
-      shareTitle: '世界那么大，我想去看看-微信test',
-      shareDesc: '世界那么大，我想去看看-微信test',
+      shareTitle: '',
+      shareDesc: '',
       shareLink: location.href.split('#')[0],
-      shareImgUrl: 'http://www.baidu.com/FpEhdOqBzM8EzgFz3ULByxatSacH'
+      shareImgUrl: '',
     }
   },
+  created() {
+     this.anchor_state[0].program_id =  this.GetQueryString('program_id');
+     this.anchor_state[0].anchor_id = this.GetQueryString('anchor_id');
+     this.anchor_state[0].source = this.GetQueryString('source');
+  },
   mounted() {
-    //this.setWxConfig();
-   
+    this.setWxConfig();
+    this.getProgramInfo()
   },
   methods: {
-    getAnchorInfo: async function() { 
+        // 项目详情
+    async getProgramInfo(){
+      var that = this;
       try {
-        //获取主播信息
-        this.anchorInfo = await getNetData("/Broadcast/GetAnchorInfo", {
-          anchor_id: this.anchor_id
-        });
+        let res = await getNetData("/Broadcast/GetProgramInfo",{'program_id':this.anchor_state[0].program_id});
+          console.log(res)
+          that.isLive = res.result.is_live;
+          this.shareTitle = res.result.program_name;
+          this.shareDesc = res.result.material_name;
+          this.shareImgUrl = res.result.material_image;
+          this.anchor_state[0].anchor_id = res.result.anchor_id;
+           console.log(that.anchor_state[0].anchor_id)
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     },
-    getProgramList: async function() { 
-      try {
-        //获取主播节目列表
-        this.programList = await getNetData("/Broadcast/GetProgramList", {
-          anchor_id: this.anchor_id, 
-          source: this.source, 
-          page: 1,
-          page_size: 100   //长页面展示不分页
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    // getProgramInfo: async function() { 
-    //   try {
-    //     //获取节目详情---回放
-    //     this.programInfo = await getNetData("/Broadcast/GetProgramInfo", {
-    //       program_id: this.program_id,
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // },
     showMask: function(){ //打开引导弹层
       this.isShow = true;
     },
@@ -215,7 +123,19 @@ export default {
         success: () => {
         }
       })
+    },
+
+    GetQueryString(name) { 
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+      var r = window.location.search.substr(1).match(reg); //获取url中"?"符后的字符串并正则匹配
+      var context = ""; 
+      if (r != null) 
+         context = r[2]; 
+      reg = null; 
+      r = null; 
+      return context == null || context == "" || context == "undefined" ? "" : context; 
     }
+
 
   },
   components: {
@@ -229,7 +149,7 @@ export default {
 </script>
 
 <style scoped>
-.container, #bgimg{
+.container{
   width: 100%;
   height: 100%;
 }

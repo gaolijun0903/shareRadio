@@ -2,8 +2,8 @@
   <div class="wrapper" @click="closeMask">
     <div class="inner">
       <div class="stationlogo">
-        <img src="https://testing.broadcast.yongche.org/upload/avatar/71e7aa3da87be755f011b84591b9d938@2x.png" alt="">
-        <div class="logobar">今日电台30个好声音</div>
+        <img :src="shareImgUrl" alt="">
+        <div class="logobar">今日电台{{len}}个好声音</div>
       </div>
       <div class="leadtip">每天好声音等着你哦<br/>打开APP随心收听</div>
       <div class="open-btn" @click="download">立即打开</div>
@@ -12,23 +12,32 @@
 </template>
 
 <script>
+import Bus from '../bus' ;
 import {phoneTypeFn, getUrlParamFn} from "../utils/functions"
 export default {
   name: "ConfirmMask",
   data() {
     return {
-      origin:'', //分享来源app--"driver" or "user"
+      len:0, //电台节目条数
+      source:'', // 来源（1乘客端、2司机端）
       phoneType:'', //机型---"ios" or "android"
       openAppSchema:'', //schema打开APP
       downloadUrl:'' //下载地址
     };
   },
+  props: {
+    shareImgUrl:{
+      type: String
+    }
+  },
   created() {
-    
+    Bus.$on('programListLength', function(len){
+      this.len = len;
+    });
   },
   mounted() {
     this.phoneType = phoneTypeFn();
-    this.origin = getUrlParamFn('appOrigin');
+    this.source = getUrlParamFn('source');
     this.setDownloadUrl();
   },
   methods:{
@@ -37,20 +46,20 @@ export default {
     },
     setDownloadUrl:function(){
       if(this.phoneType==="ios"){
-        if(this.origin==="driver"){
+        if(this.source===2){
           this.openAppSchema = "yidaodriver://";
-          this.downloadUrl = "https://itunes.apple.com/cn/app/yi-dao-che-zhu-duan/id1011021209?mt=8";
-        }else if(this.origin==="user"){
+          this.downloadUrl = "https://itunes.apple.com/cn/app/id1011021209?mt=8";
+        }else if(this.source===1){
           this.openAppSchema = "yongche://";
-          this.downloadUrl = "https://itunes.apple.com/cn/app/yi-dao-yong-che-wan-liang/id427555239?mt=8";
+          this.downloadUrl = "https://itunes.apple.com/cn/app/id427555239?mt=8";
         }else{
           console.log('未知分享来源APP')
         }
       }else if(this.phoneType==="android"){
-        if(this.origin==="driver"){
+        if(this.source===2){
           this.openAppSchema = "yidaodriver://user.com";
           this.downloadUrl ='http://d1.yongche.name//u/download/201804/ycd_724_325_huidu3.apk';
-        }else if(this.origin==="user"){
+        }else if(this.source===1){
           this.openAppSchema = "yongche://user.com";
           this.downloadUrl ='http://www.yongche.com/download/yongche.php?source=';
         }else{

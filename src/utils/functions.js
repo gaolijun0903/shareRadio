@@ -25,3 +25,7 @@ export function getUrlParamFn(urlParams) {
     if (regUrl != null) return unescape(regUrl[2]);
     return null;
 };
+
+export function padding0(num) {
+    return num < 10 ? '0' + num : '' + num;
+}
